@@ -73,7 +73,7 @@ type Font struct {
 	Language            Language
 	Hidden              bool
 	Position            int
-	//Paragraph Paragraph
+	Paragraph           Paragraph
 }
 
 /*

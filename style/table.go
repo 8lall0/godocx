@@ -1,6 +1,9 @@
 package style
 
-import "godocx/simpletype"
+import (
+	"godocx/complextype"
+	"godocx/simpletype"
+)
 
 type TableLayout string
 
@@ -33,7 +36,7 @@ type Table struct {
 	Position     TablePosition
 	ColumnWidths []int
 	BidiVisual   bool
-	// Indent TblWidthComplexType
+	Indent       complextype.TblWidth
 }
 
 //TODO controlla il costruttore ma mi sa che sti coglioni hanno fatto solo casino

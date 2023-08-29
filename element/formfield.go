@@ -9,6 +9,6 @@ type FormField struct {
 	ParagraphStyle style.Paragraph
 	Type           string // textinput|checkbox|dropdown.
 	Name           string
-	Default        string
-	Value          string
+	Default        string // Bool|int|string
+	Value          string // Bool|int|string
 }
