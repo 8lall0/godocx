@@ -17,4 +17,14 @@ type AbstractElement struct {
 	CommentRangeEnd    struct{} // COMMENT
 }
 
+type AbsEl struct {
+	ElementIndex int
+	ElementId    string
+	WithoutP     bool
+}
+
+func (a *AbsEl) foo() {
+
+}
+
 // Orco zio questa sarà difficile...

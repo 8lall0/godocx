@@ -1,14 +1,13 @@
 package element
 
 import (
-	"godocx/container"
 	"godocx/style"
 )
 
 type Row struct {
 	Height int
 	Style  style.Row
-	Cells  []container.Cell
+	Cells  []Cell
 }
 
 func (r *Row) AddCell() {
