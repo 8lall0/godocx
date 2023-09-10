@@ -1,5 +1,7 @@
 package element
 
+import "github.com/shabbyrobe/xmlwriter"
+
 type AbstractElement struct {
 	SectionId          int
 	DocPart            string // Section|Header|Footer|Footnote|Endnote
@@ -18,13 +20,27 @@ type AbstractElement struct {
 }
 
 type AbsEl struct {
-	ElementIndex int
-	ElementId    string
-	WithoutP     bool
+	ElementIndex      int
+	ElementId         string
+	WithoutP          bool
+	CommentRangeStart struct{} // COMMENT
+	CommentRangeEnd   struct{} // COMMENT
 }
 
-func (a *AbsEl) foo() {
+func (a *AbsEl) WriteCommentRangeStart(w *xmlwriter.Writer) error {
+	err := w.StartElem(xmlwriter.Elem{Name: "w:commentRangeStart"})
 
+	//$this->xmlWriter->writeElementBlock('w:commentRangeStart', ['w:id' => $comment->getElementId()]);
+	/*public function writeElementBlock($element, $attributes, $value = null): void
+	{
+		$this->startElement($element);
+		if (!is_array($attributes)) {
+	$attributes = [$attributes => $value];
+	}
+		foreach ($attributes as $attribute => $value) {
+		$this->writeAttribute($attribute, $value);
+	}
+		$this->endElement();
+	}*/
+	return err
 }
-
-// Orco zio questa sarà difficile...

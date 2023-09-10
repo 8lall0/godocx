@@ -5,29 +5,28 @@ import (
 	"fmt"
 	xw "github.com/shabbyrobe/xmlwriter"
 	"godocx/style"
-	"io"
 )
 
 type Line struct {
 	AbsEl
-	LineStyle style.Line
+	Style style.Line
 }
 
-func (l *Line) Write(writer io.Writer) error {
-	w := xw.Open(writer)
-
-	err := w.StartDoc(xw.Doc{})
-
+func (l *Line) Write(w *xw.Writer) error {
+	var err error
 	if l.WithoutP == false {
-		err = errors.Join(err, w.StartElem(xw.Elem{Name: "w:p"}))
-		//	$styleWriter->writeAlignment();
+		err = errors.Join(err,
+			w.StartElem(xw.Elem{Name: "w:p"}),
+			l.Style.WriteAlignment(w),
+		)
 	}
-	// $this->writeCommentRangeStart();
 	err = errors.Join(err,
+		l.WriteCommentRangeStart(w),
 		w.StartElem(xw.Elem{Name: "w:r"}),
 		w.StartElem(xw.Elem{Name: "w:pict"}),
 	)
 
+	// TODO rimuovi
 	l.ElementIndex = 1
 	if l.ElementIndex == 1 {
 		err = errors.Join(err,
@@ -64,11 +63,11 @@ func (l *Line) Write(writer io.Writer) error {
 			xw.Attr{Name: "id", Value: fmt.Sprintf("_x0000_s1%03d", l.ElementIndex)},
 			xw.Attr{Name: "type", Value: "#_x0000_t32"},
 		),
-		//$styleWriter->write();
-		//$styleWriter->writeStroke();
+		l.Style.Write(w),
+		l.Style.WriteStroke(w),
+		// Potenziale BUG!
 		w.EndAll(),
 	)
 
-	err = errors.Join(err, w.EndAllFlush())
 	return err
 }

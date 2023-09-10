@@ -1,5 +1,11 @@
 package style
 
+import (
+	"errors"
+	"fmt"
+	"github.com/shabbyrobe/xmlwriter"
+)
+
 type ConnectorType string
 
 const CONNECTOR_TYPE_STRAIGHT ConnectorType = "straight"
@@ -14,6 +20,10 @@ const (
 	ARROW_STYLE_OVAL    ArrowStyleDUMMY = "oval"
 )
 
+func (a *ArrowStyleDUMMY) String() string {
+	return string(*a)
+}
+
 type DashStyle string
 
 const (
@@ -27,11 +37,94 @@ const (
 )
 
 type Line struct {
+	Frame
 	Flip          bool
 	ConnectorType ConnectorType
 	Weight        int
 	Color         string
 	Dash          DashStyle
-	BeginArrow    ArrowStyle
-	EndArrow      ArrowStyle
+	BeginArrow    ArrowStyleDUMMY
+	EndArrow      ArrowStyleDUMMY
+}
+
+func (l *Line) WriteAlignment(w *xmlwriter.Writer) error {
+	var err error
+	err = w.StartElem(xmlwriter.Elem{Name: "w:pPr"})
+
+	if l.Alignment != "" {
+		w.StartElem(xmlwriter.Elem{Name: "w:jc"})
+		w.WriteAttr(xmlwriter.Attr{
+			Name:  "w:val",
+			Value: string(l.Alignment),
+		})
+		w.EndElem("w:jc")
+	}
+	w.EndElem("w:pPr")
+
+	return err
+}
+
+func (l *Line) WriteStroke(w *xmlwriter.Writer) error {
+	var err error
+	err = w.StartElem(xmlwriter.Elem{Name: "v:stroke"})
+
+	if l.Weight != 0 {
+		err = errors.Join(err,
+			w.WriteAttr(xmlwriter.Attr{Name: "weight", Value: fmt.Sprintf("%dpt", l.Weight)}),
+		)
+	}
+
+	if l.Color != "" {
+		err = errors.Join(err,
+			w.WriteAttr(xmlwriter.Attr{Name: "color", Value: l.Color}),
+		)
+	}
+
+	if l.BeginArrow != "" {
+		err = errors.Join(err,
+			w.WriteAttr(
+				xmlwriter.Attr{Name: "startarrow", Value: string(l.BeginArrow)},
+			),
+		)
+	}
+
+	if l.EndArrow != "" {
+		err = errors.Join(err,
+			w.WriteAttr(
+				xmlwriter.Attr{Name: "endarrow", Value: string(l.EndArrow)},
+			),
+		)
+	}
+
+	/*
+	   $dashStyles = [
+	       LineStyle::DASH_STYLE_DASH => 'dash',
+	       LineStyle::DASH_STYLE_ROUND_DOT => '1 1',
+	       LineStyle::DASH_STYLE_SQUARE_DOT => '1 1',
+	       LineStyle::DASH_STYLE_DASH_DOT => 'dashDot',
+	       LineStyle::DASH_STYLE_LONG_DASH => 'longDash',
+	       LineStyle::DASH_STYLE_LONG_DASH_DOT => 'longDashDot',
+	       LineStyle::DASH_STYLE_LONG_DASH_DOT_DOT => 'longDashDotDot',
+	   ];
+	*/
+	// TODO sti dash del cazzo, madonna se fa schifo sto codice madonna
+	if l.Dash != "" {
+		err = errors.Join(err,
+			w.WriteAttr(
+				xmlwriter.Attr{Name: "dashstyle", Value: string(l.Dash)},
+			),
+		)
+
+		if l.Dash == DASH_STYLE_ROUND_DOT {
+			err = errors.Join(err,
+				w.WriteAttr(
+					xmlwriter.Attr{Name: "endcap", Value: "round"},
+				),
+			)
+		}
+	}
+
+	err = errors.Join(err, w.EndElem("v:stroke"))
+
+	return err
 }
