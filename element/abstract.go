@@ -1,6 +1,9 @@
 package element
 
-import "github.com/shabbyrobe/xmlwriter"
+import (
+	"errors"
+	"github.com/shabbyrobe/xmlwriter"
+)
 
 type AbstractElement struct {
 	SectionId          int
@@ -23,24 +26,20 @@ type AbsEl struct {
 	ElementIndex      int
 	ElementId         string
 	WithoutP          bool
-	CommentRangeStart struct{} // COMMENT
-	CommentRangeEnd   struct{} // COMMENT
+	TrackChange       *TrackChange
+	CommentRangeStart *Comment
+	CommentRangeEnd   *Comment
 }
 
-func (a *AbsEl) WriteCommentRangeStart(w *xmlwriter.Writer) error {
-	err := w.StartElem(xmlwriter.Elem{Name: "w:commentRangeStart"})
+func (a *AbsEl) writeCommentRangeStart(w *xmlwriter.Writer) error {
+	if a.CommentRangeStart == nil {
+		return nil
+	}
 
-	//$this->xmlWriter->writeElementBlock('w:commentRangeStart', ['w:id' => $comment->getElementId()]);
-	/*public function writeElementBlock($element, $attributes, $value = null): void
-	{
-		$this->startElement($element);
-		if (!is_array($attributes)) {
-	$attributes = [$attributes => $value];
-	}
-		foreach ($attributes as $attribute => $value) {
-		$this->writeAttribute($attribute, $value);
-	}
-		$this->endElement();
-	}*/
+	err := errors.Join(
+		w.StartElem(xmlwriter.Elem{Name: "w:commentRangeStart"}),
+		w.WriteAttr(xmlwriter.Attr{Name: "w:id", Value: a.ElementId}),
+		w.EndElem("w:commentRangeStart"),
+	)
 	return err
 }

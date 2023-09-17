@@ -21,7 +21,7 @@ func (l *Line) Write(w *xw.Writer) error {
 		)
 	}
 	err = errors.Join(err,
-		l.WriteCommentRangeStart(w),
+		l.writeCommentRangeStart(w),
 		w.StartElem(xw.Elem{Name: "w:r"}),
 		w.StartElem(xw.Elem{Name: "w:pict"}),
 	)

@@ -2,7 +2,7 @@ package style
 
 type AbstractStyle struct {
 	styleName string
-	index     int
+	Index     int
 	aliases   []string
 	isAuto    bool
 }

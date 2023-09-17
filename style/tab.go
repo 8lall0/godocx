@@ -1,5 +1,7 @@
 package style
 
+import "github.com/shabbyrobe/xmlwriter"
+
 type TabType string
 
 const (
@@ -27,4 +29,8 @@ type Tab struct {
 	Type     TabType
 	Leader   TabLeaderType
 	Position float64
+}
+
+func (t *Tab) Write(w *xmlwriter.Writer) error {
+	return nil
 }

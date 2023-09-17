@@ -160,9 +160,9 @@ func (f *Frame) Write(w *xmlwriter.Writer) error {
 	}
 
 	if f.Wrap == WRAP_INFRONT {
-		styleAttrs += fmt.Sprintf("z-index:%d;", math.MaxInt)
+		styleAttrs += fmt.Sprintf("z-Index:%d;", math.MaxInt)
 	} else if f.Wrap == WRAP_BEHIND {
-		styleAttrs += fmt.Sprintf("z-index:%d;", -math.MaxInt)
+		styleAttrs += fmt.Sprintf("z-Index:%d;", -math.MaxInt)
 	}
 
 	err = w.WriteAttr(xmlwriter.Attr{Name: "style", Value: styleAttrs})

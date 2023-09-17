@@ -64,6 +64,16 @@ func (l *Line) WriteAlignment(w *xmlwriter.Writer) error {
 	return err
 }
 
+var dashConvertingMap = map[DashStyle]string{
+	DASH_STYLE_DASH:              "dash",
+	DASH_STYLE_ROUND_DOT:         "1 1",
+	DASH_STYLE_SQUARE_DOT:        "1 1",
+	DASH_STYLE_DASH_DOT:          "dashDot",
+	DASH_STYLE_LONG_DASH:         "longDash",
+	DASH_STYLE_LONG_DASH_DOT:     "longDashDot",
+	DASH_STYLE_LONG_DASH_DOT_DOT: "longDashDotDot",
+}
+
 func (l *Line) WriteStroke(w *xmlwriter.Writer) error {
 	var err error
 	err = w.StartElem(xmlwriter.Elem{Name: "v:stroke"})
@@ -96,22 +106,10 @@ func (l *Line) WriteStroke(w *xmlwriter.Writer) error {
 		)
 	}
 
-	/*
-	   $dashStyles = [
-	       LineStyle::DASH_STYLE_DASH => 'dash',
-	       LineStyle::DASH_STYLE_ROUND_DOT => '1 1',
-	       LineStyle::DASH_STYLE_SQUARE_DOT => '1 1',
-	       LineStyle::DASH_STYLE_DASH_DOT => 'dashDot',
-	       LineStyle::DASH_STYLE_LONG_DASH => 'longDash',
-	       LineStyle::DASH_STYLE_LONG_DASH_DOT => 'longDashDot',
-	       LineStyle::DASH_STYLE_LONG_DASH_DOT_DOT => 'longDashDotDot',
-	   ];
-	*/
-	// TODO sti dash del cazzo, madonna se fa schifo sto codice madonna
 	if l.Dash != "" {
 		err = errors.Join(err,
 			w.WriteAttr(
-				xmlwriter.Attr{Name: "dashstyle", Value: string(l.Dash)},
+				xmlwriter.Attr{Name: "dashstyle", Value: dashConvertingMap[l.Dash]},
 			),
 		)
 

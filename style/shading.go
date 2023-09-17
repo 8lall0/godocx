@@ -1,5 +1,7 @@
 package style
 
+import "github.com/shabbyrobe/xmlwriter"
+
 type ShadingPattern string
 
 const (
@@ -16,4 +18,8 @@ type Shading struct {
 	Pattern ShadingPattern //PAttern_Clear
 	Color   string
 	Fill    string
+}
+
+func (s Shading) Write(w *xmlwriter.Writer) error {
+	return nil
 }
